@@ -14,7 +14,9 @@ select * from {{ source('staging', 'bookings') }}
 
 {{ config(materialized='incremental') }}
 
-select * from {{ source('staging', 'bookings') }}
+
+SELECT * FROM  {{ source('staging', 'bookings') }}
+
 {% if is_incremental() %}
-  where created_at >= coalesce((select max(created_at) from {{ this }}), '1900-01-01')
+    WHERE CREATED_AT > (SELECT COALESCE(MAX(CREATED_AT), '1900-01-01') FROM {{ this }})
 {% endif %}
